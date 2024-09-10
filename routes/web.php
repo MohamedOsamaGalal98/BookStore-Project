@@ -3,10 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookStoreController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\SearchController;
 use App\Http\Controllers\AuthorController;
-
-
+use App\Http\Controllers\CartController;
 
 Route::resource('/books', BookStoreController::class);  
 
@@ -27,5 +25,14 @@ Route::get('/authors', [AuthorController::class, 'index']);
 
 
 //Route::resource('/departments', DepartmentController::class);  
+
+
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+Route::get('/books/add-to-cart/{id}', [BookStoreController::class, 'addToCart']);
 
 
