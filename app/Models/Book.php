@@ -29,6 +29,12 @@ class Book extends Model
         return $this->belongsTo('App\Models\Department'); 
     }
 
+
+    public function carts()
+    {
+        return $this->belongsToMany('App\Models\Cart'); 
+    }
+
     
 }
 

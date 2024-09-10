@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.app')
 
 
 @section('content')
@@ -40,6 +40,11 @@
         <label for="exampleFormControlTextarea1">Published At</label>
         <input type="text"  name='published_at' class="form-control">
         </input> 
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlInput3">Price</label>
+        <input type="number" min="0.01" max="" step="0.01"  name='price' class="form-control">
+        </input>
     </div>
     <div class="form-group">
         <label for="exampleFormControlTextarea1">Submit</label>
