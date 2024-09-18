@@ -35,6 +35,11 @@ class Book extends Model
         return $this->belongsToMany('App\Models\Cart'); 
     }
 
+     
+    public function discount()
+    {
+        return $this->belongsTo('App\Models\Discount'); 
+    }
     
 }
 

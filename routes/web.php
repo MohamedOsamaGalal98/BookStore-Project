@@ -29,3 +29,17 @@ Route::get('/authors', [AuthorController::class, 'index']);
 //Route::resource('/departments', DepartmentController::class);  
 
 
+<<<<<<< Updated upstream
+=======
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+Route::get('/cart/{id}', [CartController::class, 'addToCart']);
+
+Route::get('/cart', [CartController::class, 'showCart']);
+
+Route::post('/cart/{id}', [CartController::class, 'dropitem']);
+>>>>>>> Stashed changes

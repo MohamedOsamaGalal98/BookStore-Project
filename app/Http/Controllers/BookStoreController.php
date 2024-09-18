@@ -7,6 +7,7 @@ use App\Models\Book;
 use App\Models\Author;
 use App\Models\Cart;
 use App\Models\User;
+use App\Models\Book_Cart;
 
 use App\Http\Requests\BookRequest;
 use App\Models\Department;
@@ -18,19 +19,20 @@ class BookStoreController extends Controller
     public function index(Request $request)
     {    
 
-     if(isset($request->q)){
+       if(isset($request->q)){
                $books = $this->getBooksBySearch($request);
-     }
-     else{
+       }
+       else{
                if(isset($request->department)) {
+                    //dd($request->department);
                     $books = Book::where('department_id' , $request->department)->get();
 
                } else {
                     $books = Book::all();  
                }          
           }
+  
           return view('Books.index', compact('books'));
-
     }
 
     private function getBooksBySearch($request)
@@ -106,23 +108,11 @@ class BookStoreController extends Controller
 
   public function destroy($id)
     {
-         $book = Book::findorcr($id);
+         $book = Book::findorfail($id);
          $book->delete();
          Session::flash('message','Your Book Has Been Deleted Successfully');
          return redirect('books'); 
     }
 
 
-    public function addToCart($id){
-     
-          if(Auth::user()->cart()->first() == null) {
-                $cart = Auth::user()->cart()->create([]);
-         }
-
-          $cart = Auth::user()->cart;
-          $cart->items()->sync([
-               "book_id" => $id,
-          ], false);
-
-    }
 }
