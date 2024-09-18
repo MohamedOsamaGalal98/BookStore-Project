@@ -33,6 +33,9 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
-Route::get('/books/add-to-cart/{id}', [BookStoreController::class, 'addToCart']);
 
+Route::get('/cart/{id}', [CartController::class, 'addToCart']);
 
+Route::get('/cart', [CartController::class, 'showCart']);
+
+Route::post('/cart/{id}', [CartController::class, 'dropitem']);

@@ -32,22 +32,40 @@
 			     <p class="card-text">Published At: {{$book->published_at}}</p>
 			     <p class="card-text">Pages: {{$book->pages}}</p>
 				 <p class="card-text">Price: {{$book->price}}</p>
+				
+				 <?php 
+				 $discount =  $book->discount()->first();
+				 //dd($discount);
+				 ?>
+				 @if($discount == null)
+				 <p class="card-text">Discount: No Discount Available For This Item </p>
 
+				 <p class="card-text">Price After Discount: {{$price_after_discount = $book->price}} EGY</p>
+				 @elseif($discount->type == 'percentage')
+				 <p class="card-text">Discount: {{$discount->value }} %</p>
 
-			 <a href="{{url('books/add-to-cart/'. $book->id)}}" class='btn btn-success'>ADD TO CART</a>
+				 <p class="card-text">Price After Discount: {{$price_after_discount = $book->price -  ( $book->price * ($discount->value/100) ) }} EGY</p>
+
+				 @elseif($discount->type == 'numeric')
+				 <p class="card-text">Discount: {{$discount->value }} EGY</p>
+
+				 <p class="card-text">Price After Discount: {{$price_after_discount = $book->price -  $discount->value }} EGY</p>
+				
+				 @endif
 				
 
 
-				<!-- <button class="addtocart">
-					<div class="pretext">
-						<i class="fas fa-cart-plus"></i> ADD TO CART
-					</div>
-					<div class="pretext done">
-						<div class="posttext"><i class="fas fa-check"></i> ADDED</div>
-					</div>
-				</button>-->
+				<a href="{{url('cart/'. $book->id)}}">
+				<button class="addtocart">
+				<div class="pretext">
+					<i class="fas fa-cart-plus"></i>ADD TO CART</div>
+				<div class="pretext done">
+					<div class="posttext"><i class="fas fa-check"></i>ADDED</div>
+				</div>
+				</button>
+				</a>
 
-
+				<p style="margin-bottom: 10px;"></p>
 
 				 <a class='btn btn-info' href="{{url('/books/' . $book->id. '/edit')}}">Edit</a>
 				 <form method='POST' action="{{url('/books/' . $book->id)}}" style="display: inline;">

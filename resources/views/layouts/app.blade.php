@@ -8,25 +8,24 @@
       <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <style>
 
-
-
+  <style>
 .fa-cart-plus{
   background:#0652DD;
 }
 
 .addtocart{
   display:block;
-  padding:0.5em 1em 0.5em 1em;
-  border-radius:100px;
+
+  padding:0.25em 0.5em; /* Reduced padding */
+  border-radius:100px; /* Adjusted border-radius */
   border:none;
-  font-size:2em;
+  font-size:1em; /* Reduced font-size */
   position:relative;
   background:#0652DD;
   cursor:pointer;
-  height:2em;
-  width:10em;
+  height:3em; /* Reduced height */
+  width:10em; /* Reduced width */
   overflow:hidden;
   transition:transform 0.1s;
   z-index:1;
@@ -57,7 +56,6 @@ i{
   top:0;
   left:0;
   transition:transform 0.3s ease;
-
   transform:translate(-110%) skew(-40deg);
 }
 .posttext{
@@ -67,7 +65,7 @@ i{
   background:#be2edd;
 }
 
-    </style>
+</style>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -108,7 +106,10 @@ i{
                         <!-- Authentication Links -->
 
                         <!-- cart -->
-                        <a href=""><i class="fa-solid fa-cart-plus fa-2xl fa-border-null fa-pull-left" ></i></a>
+
+                        <form class="form-inline my-2 my-lg-0" >
+                        <a href="{{url('/cart')}}"><i class="fa-solid  fa-cart-plus fa-2xl fa-border-null fa-pull-left" ></i></a>
+                        </form>
 
                         <!--search -->
                     <form class="form-inline my-2 my-lg-0" >
@@ -164,25 +165,25 @@ i{
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>   
 
+
+
 <script src="https://kit.fontawesome.com/69d4f6a159.js" crossorigin="anonymous"></script>
 <script>
-const button = document.querySelector(".addtocart");
-const done = document.querySelector(".done");
-let added = false;
-button.addEventListener('click',()=>{
-    console.log('here');
-    if(added){
-    done.style.transform = "translate(-110%) skew(-40deg)";
-    added = false;
+document.addEventListener('click', function(event) {
+  if (event.target.closest('.addtocart')) {
+    const button = event.target.closest('.addtocart');
+    const done = button.querySelector('.done');
+    let added = button.classList.contains('added');
+
+    if (added) {
+      done.style.transform = "translate(-110%) skew(-40deg)";
+      button.classList.remove('added');
+    } else {
+      done.style.transform = "translate(0px)";
+      button.classList.add('added');
+    }
   }
-  else{
-    done.style.transform = "translate(0px)";
-    added = true;
-  }
-    
 });
-
-
 </script>
 </body>
 </html>
