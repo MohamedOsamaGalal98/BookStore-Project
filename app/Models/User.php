@@ -48,4 +48,16 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\Cart'); 
     }
 
+
+    public function general_user_discount()
+    {
+        return $this->belongsto('App\Models\Discount'); 
+    }
+
+
+    public function specific_user_discount()
+    {
+        return $this->belongsToMany('App\Models\Discount'); 
+    }
+
 }

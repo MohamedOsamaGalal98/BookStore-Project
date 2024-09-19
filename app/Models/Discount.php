@@ -16,8 +16,27 @@ class Discount extends Model
     ];
 
     
-    public function books()
+
+    public function general_user_discount()
+    {
+        return $this->hasMany('App\Models\User'); 
+    }
+
+
+    public function discount()
     {
         return $this->hasMany('App\Models\Book'); 
+    }
+
+
+    public function specific_user_discount()
+    {
+        return $this->belongsToMany('App\Models\User'); 
+    }
+
+
+    public function specific_book_discount()
+    {
+        return $this->belongsToMany('App\Models\Book'); 
     }
 }
