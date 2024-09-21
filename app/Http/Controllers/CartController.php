@@ -2,45 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\CartRequest;
-
-use App\Models\Cart;
-use App\Models\User;
-use App\Models\Book_Cart;
-
-use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
-
-
     public function addToCart($id){
       
-        if(Auth::user()->cart()->first() == null) {
+        $cart = Auth::user()->cart;
+
+        if(!$cart) {
             $cart = Auth::user()->cart()->create([]);
        }
+       
+        $existsBook = $cart->items->where('id', $id)->first();
 
-        $cart = Auth::user()->cart;
-        $cartbooks = $cart->items;
-
-        if ($cartbooks->where('id', $id)->first() !=  null){
-            $book = Book_Cart::where('book_id', $id)
-            ->where('cart_id', ($cart->id),)
-            ->first();
-
-            $new_quantity = ($book->quantity) + 1;
-            $book->update([
-                "quantity" => $new_quantity,
-                ]);
+        if ($existsBook){
+            $existsBook->pivot->update(["quantity" => ++$existsBook->pivot->quantity]);
         } else{
-            Book_Cart::create([
-                "cart_id" => $cart->id,
-                "book_id" => $id,
-                "quantity" => '1',
-                ]);
+            $cart->items()->attach($id);
         }    
         return redirect('books'); 
   }
@@ -49,39 +29,46 @@ class CartController extends Controller
 
     public function showCart(){
 
-        $cart = Auth::user()->cart;
-        $cartitems = $cart->items;
+        $cartitems = Auth::user()->cart->items;
+        $total_quantity = 0;
 
-        $cartbooks = Book_Cart::where('cart_id', ($cart->id))->get();
+        $cartitems->each(function($item) use (&$total_quantity, &$total_price){
+            $discount = $item->discount;
+            $total_price = $this->getTotalPrice($discount, $item);
+            $total_quantity += $item->pivot->quantity;
+        });
 
-        return view('Cart.show', compact('cartbooks', 'cartitems'));
+        return view('Cart.show', compact('cartitems', 'total_price', 'total_quantity'));
 
     }
 
+    public function getTotalPrice($discount, $item)
+    {
+        $total_price = 0;
 
+        if((isset($discount) && $discount->type == 'percentage')) {
+            $total_price += $item->pivot->quantity * ($item->price  - ($item->price *  $discount->value/100)) ;
+        }elseif(isset($discount) &&  $discount->type == 'numeric') {
+            $total_price += $item->pivot->quantity * ($item->price  - $discount->value) ;
+        } else {
+            $total_price += $item->pivot->quantity * $item->price;
+        }
+        return $total_price;
+    }
 
     public function dropitem($id){
 
-        $cart = Auth::user()->cart;
-        $cartitems = $cart->items;
+        $book = Auth::user()->cart->items()->where('book_id', $id)->first();
 
-        $book = Book_Cart::where('book_id', $id)
-        ->where('cart_id', ($cart->id),)
-        ->first();
-
-        if ($book->quantity == 1){
-            $book->delete();
+        if ($book->pivot->quantity == 1){
+            Auth::user()->cart->items()->detach($book->id);
             Session::flash('message','Item Has Been Deleted Successfully');
         } else {
-            $new_quantity = ($book->quantity) - 1;
-            $book->update([
-                "quantity" => $new_quantity,
-                ]);
+            $book->pivot->update(["quantity" => --$book->pivot->quantity]);
             Session::flash('message','Your Item Dropped Successfully');
         }
 
         return redirect('cart'); 
-
     }
 
 }
