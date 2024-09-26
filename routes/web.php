@@ -5,6 +5,7 @@ use App\Http\Controllers\BookStoreController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\DiscountController;
 
 Route::resource('/books', BookStoreController::class);  
 
@@ -36,6 +37,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/cart/{id}', [CartController::class, 'addToCart']);
 
-Route::get('/cart', [CartController::class, 'showCart']);
+Route::any('/cart', [CartController::class, 'showCart']);
 
 Route::post('/cart/{id}', [CartController::class, 'dropitem']);
+
+
+// Route::post('/discount/copon', [DiscountController::class, 'check_discount']);
+

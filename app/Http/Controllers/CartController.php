@@ -4,9 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
+use App\Models\Discount;
 
 class CartController extends Controller
 {
+    private DiscountController $discountController;
+    
+    public function __construct(DiscountController  $discountController)
+    {
+        $this->discountController = $discountController;
+    }
+
     public function addToCart($id){
       
         $cart = Auth::user()->cart;
@@ -27,34 +36,51 @@ class CartController extends Controller
 
 
 
-    public function showCart(){
+    public function showCart(Request $request)
+    {
 
         $cartitems = Auth::user()->cart->items;
-        $total_quantity = 0;
+        $item_price = 0;
+        $total_price = 0;
 
-        $cartitems->each(function($item) use (&$total_quantity, &$total_price){
-            $discount = $item->discount;
-            $total_price = $this->getTotalPrice($discount, $item);
+        $cartitems->each(function($item) use (&$total_quantity, &$item_price, &$total_price){
+            $item_price = $this->getTotalPrice($item->discount->first(), $item->price);
+            $total_price += $item->pivot->quantity * $item_price;
             $total_quantity += $item->pivot->quantity;
         });
 
-        return view('Cart.show', compact('cartitems', 'total_price', 'total_quantity'));
+        $discount = null;
+        if($request->has('copon')) {
+            $discount = Discount::where("code", $request->copon)->first();
+
+            $checkDiscount = $this->discountController->checkDiscount($discount);
+            Session::flash('message', $checkDiscount['message']);
+
+            if($checkDiscount['status']) {
+                $total_price = $this->getTotalPrice($discount, $total_price);
+            }
+        } 
+
+        return view('Cart.show', compact('cartitems', 'total_price', 'total_quantity', 'discount'));
 
     }
 
-    public function getTotalPrice($discount, $item)
+    public function getTotalPrice($discount, $total_price)
     {
-        $total_price = 0;
-
-        if((isset($discount) && $discount->type == 'percentage')) {
-            $total_price += $item->pivot->quantity * ($item->price  - ($item->price *  $discount->value/100)) ;
-        }elseif(isset($discount) &&  $discount->type == 'numeric') {
-            $total_price += $item->pivot->quantity * ($item->price  - $discount->value) ;
-        } else {
-            $total_price += $item->pivot->quantity * $item->price;
-        }
+    //dd($discount);
+         if((isset($discount) && $discount->discount_type == 'percentage')) {
+             $total_price =  ($total_price  - ($total_price *  $discount->value/100)) ;
+         }elseif(isset($discount) &&  $discount->discount_type == 'fixed') {
+            //dd('aaaa');
+             $total_price =  ($total_price  - $discount->value) ;
+         } else {
+             $total_price =  $total_price;
+         }
+        // dd($total_price);
         return $total_price;
     }
+
+
 
     public function dropitem($id){
 

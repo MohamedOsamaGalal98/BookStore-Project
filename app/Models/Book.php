@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\Available_Discount;
 
 class Book extends Model
 {
@@ -36,22 +37,31 @@ class Book extends Model
         return $this->belongsToMany('App\Models\Cart'); 
     }
 
-     
-    public function discount()
-    {
-        return $this->belongsTo('App\Models\Discount'); 
-    }
 
-    public function getDiscountTextAttribute()
-    {
-        if($this->discount == null) {
-            return 'No Discount Available';
-        }  elseif ($this->discount->type === 'percentage') {
-            return $this->discount->value . ' %';
-        } elseif ($this->discount->type === 'numeric') {
-            return $this->discount->value . ' EGY';
-        }
-    }
+    //  public function applied_discounts()
+    //  {
+    //      return $this->belongsToMany('App\Models\Discount', 'applied_discounts'); 
+    //  }
+
+     public function discount()
+     {
+         return $this->belongsToMany('App\Models\Discount', 'book_discount'); 
+     }
+
+
+     public function getDiscountTextAttribute()
+     {           
+        // dd($this->discount->first());
+         $discount = $this->discount->first();
+         //dd($discount);
+         if($discount == null) {
+             return ' No Discount Available ';
+         }  elseif ($discount->discount_type == 'percentage') {
+             return $discount->value . ' %';
+         } elseif ($discount->discount_type == 'fixed') {
+             return $discount->value . ' EGY';
+         }
+     }
  
     
 }

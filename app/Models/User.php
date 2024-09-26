@@ -48,4 +48,11 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\Cart'); 
     }
 
+
+    public function user_discounts()
+    {
+        return $this->belongsToMany('App\Models\Discount'); 
+    }
+
+
 }

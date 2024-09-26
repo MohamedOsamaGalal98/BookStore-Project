@@ -11,13 +11,30 @@ class Discount extends Model
 
 
     protected $fillable = [
-        'type',
-        'value',
-    ];
+            'code',
+            'discount_type',
+            'value',
+            'limit',
+            'start_date',
+            'end_date',
+        ];
 
-    
+
+    public function user_discounts()
+    {
+        return $this->belongsToMany('App\Models\User'); 
+    }
+
+
+    // public function book_discounts()
+    // {
+    //     return $this->belongsToMany('App\Models\Book'); 
+    // }
+
+
     public function books()
     {
-        return $this->hasMany('App\Models\Book'); 
+        return $this->belongsToMany('App\Models\Book' , 'book_discount'); 
     }
+
 }

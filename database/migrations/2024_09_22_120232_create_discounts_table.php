@@ -14,8 +14,15 @@ return new class extends Migration
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
 
-            $table->enum('type', ['percentage', 'numeric']);
+            $table->string('code');
+
+            $table->enum('discount_type', ['percentage', 'fixed']);
             $table->decimal('value', $precision = 8, $scale = 2);
+     
+            $table->integer('limit')->nullable(); // limit to coupon usage
+
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
 
             $table->timestamps();
         });

@@ -36,7 +36,7 @@
 									<p class="card-text">Price: {{$book->price}}</p>
 
 								
-									<p class="card-text">Discount: {{ $book->discount_text }} </p>
+									 <p class="card-text">Discount: {{ $book->discount_text }} </p> 
 
 									<a href="{{url('cart/'. $book->id)}}">
 										<button class="addtocart">
