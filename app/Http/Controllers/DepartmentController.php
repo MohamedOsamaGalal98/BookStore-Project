@@ -15,6 +15,7 @@ class DepartmentController extends Controller
     public function index()
     {
          $departments = Department::all();  
+         return response()->json(['data' => $departments]);
          return view('departments.index', compact('departments'));
        // View::share('$departments', '$departments->name');
     }

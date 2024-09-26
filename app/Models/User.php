@@ -49,15 +49,10 @@ class User extends Authenticatable
     }
 
 
-    public function general_user_discount()
-    {
-        return $this->belongsto('App\Models\Discount'); 
-    }
-
-
-    public function specific_user_discount()
+    public function user_discounts()
     {
         return $this->belongsToMany('App\Models\Discount'); 
     }
+
 
 }

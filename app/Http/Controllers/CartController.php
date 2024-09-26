@@ -2,86 +2,99 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\CartRequest;
-
-use App\Models\Cart;
-use App\Models\User;
-use App\Models\Book_Cart;
-
-use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
+use App\Models\Discount;
 
 class CartController extends Controller
 {
-
+    private DiscountController $discountController;
+    
+    public function __construct(DiscountController  $discountController)
+    {
+        $this->discountController = $discountController;
+    }
 
     public function addToCart($id){
       
-        if(Auth::user()->cart()->first() == null) {
+        $cart = Auth::user()->cart;
+
+        if(!$cart) {
             $cart = Auth::user()->cart()->create([]);
        }
+       
+        $existsBook = $cart->items->where('id', $id)->first();
 
-        $cart = Auth::user()->cart;
-        $cartbooks = $cart->items;
-
-        if ($cartbooks->where('id', $id)->first() !=  null){
-            $book = Book_Cart::where('book_id', $id)
-            ->where('cart_id', ($cart->id),)
-            ->first();
-
-            $new_quantity = ($book->quantity) + 1;
-            $book->update([
-                "quantity" => $new_quantity,
-                ]);
+        if ($existsBook){
+            $existsBook->pivot->update(["quantity" => ++$existsBook->pivot->quantity]);
         } else{
-            Book_Cart::create([
-                "cart_id" => $cart->id,
-                "book_id" => $id,
-                "quantity" => '1',
-                ]);
+            $cart->items()->attach($id);
         }    
         return redirect('books'); 
   }
 
 
 
-    public function showCart(){
+    public function showCart(Request $request)
+    {
 
-        $cart = Auth::user()->cart;
-        $cartitems = $cart->items;
+        $cartitems = Auth::user()->cart->items;
+        $item_price = 0;
+        $total_price = 0;
 
-        $cartbooks = Book_Cart::where('cart_id', ($cart->id))->get();
+        $cartitems->each(function($item) use (&$total_quantity, &$item_price, &$total_price){
+            $item_price = $this->getTotalPrice($item->discount->first(), $item->price);
+            $total_price += $item->pivot->quantity * $item_price;
+            $total_quantity += $item->pivot->quantity;
+        });
 
-        return view('Cart.show', compact('cartbooks', 'cartitems'));
+        $discount = null;
+        if($request->has('copon')) {
+            $discount = Discount::where("code", $request->copon)->first();
 
+            $checkDiscount = $this->discountController->checkDiscount($discount);
+            Session::flash('message', $checkDiscount['message']);
+
+            if($checkDiscount['status']) {
+                $total_price = $this->getTotalPrice($discount, $total_price);
+            }
+        } 
+
+        return view('Cart.show', compact('cartitems', 'total_price', 'total_quantity', 'discount'));
+
+    }
+
+    public function getTotalPrice($discount, $total_price)
+    {
+    //dd($discount);
+         if((isset($discount) && $discount->discount_type == 'percentage')) {
+             $total_price =  ($total_price  - ($total_price *  $discount->value/100)) ;
+         }elseif(isset($discount) &&  $discount->discount_type == 'fixed') {
+            //dd('aaaa');
+             $total_price =  ($total_price  - $discount->value) ;
+         } else {
+             $total_price =  $total_price;
+         }
+        // dd($total_price);
+        return $total_price;
     }
 
 
 
     public function dropitem($id){
 
-        $cart = Auth::user()->cart;
-        $cartitems = $cart->items;
+        $book = Auth::user()->cart->items()->where('book_id', $id)->first();
 
-        $book = Book_Cart::where('book_id', $id)
-        ->where('cart_id', ($cart->id),)
-        ->first();
-
-        if ($book->quantity == 1){
-            $book->delete();
+        if ($book->pivot->quantity == 1){
+            Auth::user()->cart->items()->detach($book->id);
             Session::flash('message','Item Has Been Deleted Successfully');
         } else {
-            $new_quantity = ($book->quantity) - 1;
-            $book->update([
-                "quantity" => $new_quantity,
-                ]);
+            $book->pivot->update(["quantity" => --$book->pivot->quantity]);
             Session::flash('message','Your Item Dropped Successfully');
         }
 
         return redirect('cart'); 
-
     }
 
 }

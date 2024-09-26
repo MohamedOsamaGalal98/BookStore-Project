@@ -106,11 +106,11 @@ i{
                         <!-- Authentication Links -->
 
                         <!-- cart -->
-
+                        @if(!auth()->guest())
                         <form class="form-inline my-2 my-lg-0" >
                         <a href="{{url('/cart')}}"><i class="fa-solid  fa-cart-plus fa-2xl fa-border-null fa-pull-left" ></i></a>
                         </form>
-
+                        @endif
                         <!--search -->
                     <form class="form-inline my-2 my-lg-0" >
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q"> 

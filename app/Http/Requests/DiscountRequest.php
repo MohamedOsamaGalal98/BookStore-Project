@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Book_CartRequest extends FormRequest
+class Available_DiscountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,12 @@ class Book_CartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cart_id'   => 'required',
-            'book_id'   => 'required',
-            'quantity'  => 'required',
+            'code' => 'required',
+            'discount_type' => 'required',
+            'value' => 'required',
+            'limit' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
         ];
     }
 }
