@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Models\Department;
-use App\Models\Book;
 use App\Http\Requests\DepartmentRequest;
 use Session;
 
@@ -15,12 +12,11 @@ class DepartmentController extends Controller
     public function index()
     {
          $departments = Department::all();  
-         return response()->json(['data' => $departments]);
+         //return response()->json(['data' => $departments]);
          return view('departments.index', compact('departments'));
        // View::share('$departments', '$departments->name');
     }
 
-//////////////////////////
     public function create()
     {
         // $departments = Department::all();
