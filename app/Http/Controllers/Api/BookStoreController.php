@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
+use App\Http\Controllers\controller;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
-use App\Models\Author;
 
 use App\Http\Requests\BookRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
+
+//return response()->json(['data' => $departments]);
 
 class BookStoreController extends Controller
 {
@@ -20,15 +21,14 @@ class BookStoreController extends Controller
        }
        else{
                if(isset($request->department)) {
-                    //dd($request->department);
                     $books = Book::where('department_id' , $request->department)->get();
 
                } else {
                     $books = Book::all();  
                }          
           }
-  
-          return view('Books.index', compact('books'));
+          return response()->json(['data' => $books], 200); // Status code OK
+          //return view('Books.index', compact('books'));
     }
 
     private function getBooksBySearch($request)
@@ -37,20 +37,18 @@ class BookStoreController extends Controller
     }
 
 
-    public function create()
-    {
-         $authors = Author::all();
-         return view('Books.create', compact('authors'));
-    }
+//     public function create()
+//     {
+//          $authors = Author::all();
+//          return view('Books.create', compact('authors'));
+//     }
 
 
     public function store(BookRequest $request)
     {
-         //dd($request->all());
          $book  = Book::create($request->all());
          $book->authors()->sync($request->input('author_list'));
-         //dd($book->department()->save($request->department));
-//dd($request->image);
+
          $imageName = time().'.'.$request->image->extension();
 
          // Public Folder
@@ -58,9 +56,10 @@ class BookStoreController extends Controller
           $book->image=$imageName;
           $book->save();
 
-        // dd($book->authors);
-         Session::flash('message', 'Your Book Has Been Created Successfully'); 
-         return redirect('books');
+          return response()->json(['data' => $book], 201); // Status code created
+
+         //Session::flash('message', 'Your Book Has Been Created Successfully'); 
+         //return redirect('books');
     }
 
 
@@ -68,23 +67,24 @@ class BookStoreController extends Controller
 
     public function show($id)
     {
-     Auth::user();
+         Auth::user();
          $book = Book::findorfail($id);
 
-         //dd($book);
-         return view('Books.show', compact('book'));
+         return response()->json(['data' => $book], 200); // Status code OK
+         //return view('Books.show', compact('book'));
 
     }
 
 
 
-    public function edit($id)
-    {
-         $book = Book::findorfail($id);
-         $authors = Author::all();
-         //dd($book);
-         return view('Books.edit', compact('book', 'authors'));
-    }
+//     public function edit($id)
+//     {
+//          $book = Book::findorfail($id);
+//          $authors = Author::all();
+
+//          //return response()->json(['data' => [ 'book' => $book,  'author' => $authors] ], 200); // Status code OK
+//          //return view('Books.edit', compact('book', 'authors'));
+//     }
 
    public function update(BookRequest $request, $id)
     {
@@ -92,22 +92,26 @@ class BookStoreController extends Controller
          $book->update($request->all());
          $book->authors()->sync($request->input('author_list'));
 
+         if($request->has('image')){
          $imageName = time().'.'.$request->image->extension();
          $request->image->move(public_path('images'), $imageName);
           $book->image=$imageName;
+         }
           $book->save();
           
-         //dd($book);
-         Session::flash('message', 'Your Book Has Been Updated Successfully'); 
-         return redirect('books'); 
+          return response()->json(['message' => 'Success', 'data' => $book], 200); // Status code OK
+          //Session::flash('message', 'Your Book Has Been Updated Successfully'); 
+         //return redirect('books'); 
     }
 
   public function destroy($id)
     {
          $book = Book::findorfail($id);
          $book->delete();
-         Session::flash('message','Your Book Has Been Deleted Successfully');
-         return redirect('books'); 
+
+         return response()->json(['message' => 'Success'], 200); // Status code OK
+         //Session::flash('message','Your Book Has Been Deleted Successfully');
+         //return redirect('books'); 
     }
 
 

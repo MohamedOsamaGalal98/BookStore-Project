@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use App\Models\Available_Discount;
 
 class Book extends Model
 {
@@ -17,6 +15,7 @@ class Book extends Model
         'published_at',
         'department_id',
         'image',
+        'price',
     ];
 
 
