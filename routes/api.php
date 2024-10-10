@@ -5,19 +5,18 @@ use App\Http\Controllers\Api\BookStoreController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\LoginController;
 
-Route::resource('/books', BookStoreController::class)->except(['create', 'edit']);;  
-
-
-
-Route::get('/departments', [DepartmentController::class, 'index']);
-Route::post('/departments', [DepartmentController::class, 'store']);
-
-Route::get('/authors', [AuthorController::class, 'index']);
+Route::post('/login', [LoginController::class, 'login']);
 
 
+Route::resource('/books', BookStoreController::class)->except(['create', 'edit'])->middleware('auth:sanctum'); 
 
-//Route::get('/cart/{id}', [CartController::class, 'addToCart']);
-Route::any('/cart', [CartController::class, 'showCart']);
-Route::post('/cart/{id}', [CartController::class, 'dropitem']);
+Route::get('/departments', [DepartmentController::class, 'index'])->middleware('auth:sanctum'); 
+Route::post('/departments', [DepartmentController::class, 'store'])->middleware('auth:sanctum'); 
 
+Route::get('/authors', [AuthorController::class, 'index'])->middleware('auth:sanctum'); 
+
+Route::post('/cart', [CartController::class, 'addToCart'])->middleware('auth:sanctum'); 
+Route::get('/cart', [CartController::class, 'showCart'])->middleware('auth:sanctum'); 
+Route::delete('/cart', [CartController::class, 'dropitem'])->middleware('auth:sanctum'); 

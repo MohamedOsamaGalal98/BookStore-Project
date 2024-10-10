@@ -18,7 +18,7 @@ class CartController extends Controller
         $this->discountController = $discountController;
     }
     
-    public function addToCart($id){
+    public function addToCart(Request $request){
       
         $cart = Auth::user()->cart;
 
@@ -26,12 +26,12 @@ class CartController extends Controller
             $cart = Auth::user()->cart()->create([]);
        }
        
-        $existsBook = $cart->items->where('id', $id)->first();
+        $existsBook = $cart->items->where('id', $request->id)->first();
 
         if ($existsBook){
             $existsBook->pivot->update(["quantity" => ++$existsBook->pivot->quantity]);
         } else{
-            $cart->items()->attach($id);
+            $cart->items()->attach($request->id);
         }    
         return response()->json(['message' => 'Success'], 200); // Status code OK
         //return redirect('books'); 
@@ -41,7 +41,6 @@ class CartController extends Controller
 
     public function showCart(Request $request)
     {
-
         $cartitems = Auth::user()->cart->items;
         $item_price = 0;
         $total_price = 0;
@@ -92,9 +91,9 @@ class CartController extends Controller
 
 
 
-    public function dropitem($id){
-
-        $book = Auth::user()->cart->items()->where('book_id', $id)->first();
+    public function dropitem(Request $request){
+//dd($request->id);
+        $book = Auth::user()->cart->items()->where('book_id', $request->id)->first();
 
         if ($book->pivot->quantity == 1){
             Auth::user()->cart->items()->detach($book->id);
