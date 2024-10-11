@@ -37,4 +37,21 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+        /**
+     * Get the guard to be used during authentication.
+     *
+     * @return \Illuminate\Contracts\Auth\StatefulGuard
+     */
+    protected function guard()
+    {
+        $guard = '';
+
+        if(request()->guard == 'author') {
+            $guard = 'authors';
+        }
+        return \Auth::guard($guard);
+
+        
+    }
 }

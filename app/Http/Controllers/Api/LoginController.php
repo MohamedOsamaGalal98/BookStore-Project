@@ -11,13 +11,20 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-       Auth::attempt(
+        $guard = '';
+
+        if(request()->guard == 'author') {
+            $guard = 'authors';
+
+        }
+        //dd($guard);
+
+        Auth::guard($guard)->attempt(
            $request->only('email', 'password'), $request->boolean('remember')
         );
-
-        //dd($request->user());
-        $token =  $request->user()->createToken($request->user()->name);
-        return response()->json(['token' => $token->plainTextToken, 'user' => $request->user()]); 
+        //dd(Auth::guard($guard)->user());
+        $token =  Auth::guard($guard)->user()->createToken(Auth::guard($guard)->user()->name);
+        return response()->json(['token' => $token->plainTextToken, 'user' => Auth::guard($guard)->user()]); 
 
     }
 }

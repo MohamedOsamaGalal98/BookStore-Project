@@ -11,6 +11,15 @@
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
+                        <!-- Guard Selector -->
+                         <div>
+                            <select name="guard"
+                                    id="guard"
+                                    required>
+                            <option calue="user">User</option>
+                            <option value="author">Author</option>    
+                            </select>
+                         </div>
                         <div class="row mb-3">
                             <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
 

@@ -6,30 +6,28 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\CartController;
 
-Route::resource('/books', BookStoreController::class);  
+Route::resource('/books', BookStoreController::class)->middleware('auth:authors,web');
 
+Route::get('/departments', [DepartmentController::class, 'index'])->middleware('auth:authors,web');  
 
-Route::get('/departments', [DepartmentController::class, 'index']);
+Route::get('/departments/create', [DepartmentController::class, 'create'])->middleware('auth:authors,web');
 
-Route::get('/departments/create', [DepartmentController::class, 'create']);
+Route::post('/departments', [DepartmentController::class, 'store'])->middleware('auth:authors,web');
 
-Route::post('/departments', [DepartmentController::class, 'store']);
-
-
-Route::get('/authors', [AuthorController::class, 'index']);
+Route::get('/authors', [AuthorController::class, 'index'])->middleware('auth:authors,web');  
 
 
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth:authors,web');
 
 
 
-Route::get('/cart/{id}', [CartController::class, 'addToCart']);
+Route::get('/cart/{id}', [CartController::class, 'addToCart'])->middleware('auth:authors,web');  
 
-Route::any('/cart', [CartController::class, 'showCart']);
+Route::any('/cart', [CartController::class, 'showCart'])->middleware('auth:authors,web');  
 
-Route::post('/cart/{id}', [CartController::class, 'dropitem']);
+Route::post('/cart/{id}', [CartController::class, 'dropitem'])->middleware('auth:authors,web');  
 
 
