@@ -26,15 +26,16 @@ class Discount extends Model
     }
 
 
-    // public function book_discounts()
-    // {
-    //     return $this->belongsToMany('App\Models\Book'); 
-    // }
-
-
     public function books()
     {
         return $this->belongsToMany('App\Models\Book' , 'book_discount'); 
+    }
+
+
+
+    public function carts()
+    {
+        return $this->hasMany('App\Models\Cart'); 
     }
 
 }

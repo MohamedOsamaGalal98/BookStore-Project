@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\PaymentController;
 
 Route::post('/login', [LoginController::class, 'login']);
 
@@ -20,3 +21,6 @@ Route::get('/authors', [AuthorController::class, 'index'])->middleware('auth:san
 Route::post('/cart', [CartController::class, 'addToCart'])->middleware('auth:sanctum'); 
 Route::get('/cart', [CartController::class, 'showCart'])->middleware('auth:sanctum'); 
 Route::delete('/cart', [CartController::class, 'dropitem'])->middleware('auth:sanctum'); 
+
+Route::post('/payment', [PaymentController::class, 'checkout'])->middleware('auth:sanctum'); 
+Route::get('/paymentcallback', [PaymentController::class, 'paymentCallback']);

@@ -65,6 +65,12 @@
 			<h5 class="card-title" >Total Price: {{$total_price}}</h5>
 			<h5 class="card-title" >Total Quantity: {{$total_quantity}}</h5>
 
+				<form method="POST"  action="{{url('/payment/'. $total_price)}}" enctype="multipart/form-data">
+				@csrf
+				    <div class="form-group">
+						<button type="submit" class="btn btn-info">Checkout</button>
+				    </div>
+				 </form>
 
 			</div> 
 		</body>
