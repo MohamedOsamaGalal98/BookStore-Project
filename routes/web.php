@@ -5,6 +5,7 @@ use App\Http\Controllers\BookStoreController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentController;
 
 Route::resource('/books', BookStoreController::class)->middleware('auth:authors,web');
 
@@ -30,4 +31,5 @@ Route::any('/cart', [CartController::class, 'showCart'])->middleware('auth:autho
 
 Route::post('/cart/{id}', [CartController::class, 'dropitem'])->middleware('auth:authors,web');  
 
-
+Route::post('/payment/{total_price}', [PaymentController::class, 'checkout'])->middleware('auth:authors,web');
+Route::get('/paymentcallback', [PaymentController::class, 'paymentCallback']);

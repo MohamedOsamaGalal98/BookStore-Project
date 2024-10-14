@@ -38,10 +38,14 @@ class CartController extends Controller
 
     public function showCart(Request $request)
     {
-
-        $cartitems = Auth::user()->cart->items;
-        $item_price = 0;
+        $cartitems = [];
+        $discount = null;
+        $total_quantity = 0;
         $total_price = 0;
+        
+        if(Auth::user()->cart){
+        $cartitems = Auth::user()->cart->items;
+       
 
         $cartitems->each(function($item) use (&$total_quantity, &$item_price, &$total_price){
             $item_price = $this->getTotalPrice($item->discount->first(), $item->price);
@@ -49,18 +53,24 @@ class CartController extends Controller
             $total_quantity += $item->pivot->quantity;
         });
 
-        $discount = null;
         if($request->has('copon')) {
             $discount = Discount::where("code", $request->copon)->first();
 
             $checkDiscount = $this->discountController->checkDiscount($discount);
             Session::flash('message', $checkDiscount['message']);
 
+
             if($checkDiscount['status']) {
                 $total_price = $this->getTotalPrice($discount, $total_price);
+                $cart = Auth::user()->cart()->first();
+               // dd($cart );
+                $cart ->update([
+                    'discount_id' =>  $discount->id
+                    ]);
             }
         } 
 
+    }
         return view('Cart.show', compact('cartitems', 'total_price', 'total_quantity', 'discount'));
 
     }
