@@ -30,7 +30,7 @@ class BookResource extends Resource
     {
         return $form
             ->schema([
-                SpatieMediaLibraryFileUpload::make('image')->label('Image')->columnSpanFull(),
+                //SpatieMediaLibraryFileUpload::make('image')->label('Image')->columnSpanFull(),
 
                 TextInput::make('title')->label('Book Title')->columnSpanFull(),
 
@@ -68,7 +68,7 @@ class BookResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -77,6 +77,7 @@ class BookResource extends Resource
     {
         return [
             RelationManagers\AuthorsRelationManager::class,
+
         ];
     }
 

@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->Integer('Customer_id');
-            $table->string('CustomerName');
-            $table->string('CustomerEmail');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('user_name');
+            $table->string('user_email');
 
             $table->Integer('InvoiceId');
             $table->string('InvoiceStatus');
@@ -33,8 +33,11 @@ return new class extends Migration
             $table->string('TransationValue');
             $table->string('PaidCurrency');
             $table->string('IpAddress');
-            
+
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
         });
     }
 

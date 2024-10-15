@@ -21,6 +21,13 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
+
+    public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()->where('email', '!=', 'admin@m.com');
+}
+
+
     public static function form(Form $form): Form
     {
         return $form
@@ -35,7 +42,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->label('User Name'),
+                TextColumn::make('name')->label('User Name')->searchable()->sortable(),
             ])
             ->filters([
                 //
@@ -43,6 +50,7 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -54,7 +62,10 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            //RelationManagers\TransactionsRelationManager::class,
+            RelationManagers\AppliedDiscountsCartsRelationManager::class,
+            RelationManagers\TransactionsRelationManager::class,
+
         ];
     }
 
