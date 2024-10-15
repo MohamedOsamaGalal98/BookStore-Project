@@ -25,7 +25,6 @@ class BookRequest extends FormRequest
             'title'  => 'required|min:3',
             'pages' => 'required|numeric',
             'published_at' => 'required|integer|min:1800|max:2024',
-            //'image' => 'required|image',
             'department_id'  => 'required',
             'price'  => 'required',
         ];

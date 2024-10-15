@@ -18,7 +18,6 @@ class Book extends Model implements HasMedia
         'pages',
         'published_at',
         'department_id',
-        //'image',
         'price',
     ];
 
