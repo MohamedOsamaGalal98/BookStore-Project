@@ -22,4 +22,9 @@ class AppliedDiscountsCarts extends Model
         'general_cart_discount' => 'json',
         'books_data_with_specific_cart_discount' => 'json',
     ];
+
+    public function users() 
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }

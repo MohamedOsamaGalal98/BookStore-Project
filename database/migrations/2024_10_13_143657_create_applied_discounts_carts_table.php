@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
 
             //user data
-            $table->Integer('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('user_name');
             $table->string('user_email');
 
@@ -31,6 +31,9 @@ return new class extends Migration
             $table->json('books_data_with_specific_cart_discount')->nullable();
 
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
         });
     }
 

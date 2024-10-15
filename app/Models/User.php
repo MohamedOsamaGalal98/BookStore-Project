@@ -57,7 +57,20 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
+        if(auth()->user()->email != 'admin@m.com') {
+            return false;
+        }
+
         return true;
     }
 
+    public function AppliedDiscountsCarts()
+    {
+        return $this->hasMany('App\Models\AppliedDiscountsCarts'); 
+    }
+
+    public function Transactions()
+    {
+        return $this->hasMany('App\Models\Transaction'); 
+    }
 }

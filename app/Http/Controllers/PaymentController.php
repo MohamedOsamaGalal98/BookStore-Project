@@ -103,9 +103,9 @@ class PaymentController extends Controller
             'InvoiceId' => $response->Data->InvoiceId,
           ], [
           
-            'Customer_id' => $user->id,
-            'CustomerName' => $response->Data->CustomerName,
-            'CustomerEmail' => $response->Data->CustomerEmail,
+            'user_id' => $user->id,
+            'user_name' => $response->Data->CustomerName,
+            'user_email' => $response->Data->CustomerEmail,
 
             'InvoiceId' => $response->Data->InvoiceId,
             'InvoiceStatus' => $response->Data->InvoiceStatus,
@@ -176,13 +176,13 @@ class PaymentController extends Controller
                 'user_email' => $response->Data->CustomerEmail,
                 'PaymentId' => $response->Data->InvoiceTransactions[0]->PaymentId,
 
-                'general_cart_discount' => ['general_discount_type' =>$discount->discount_type,
-                                           'general_discount_value' =>$discount->value,
+                'general_cart_discount' => ['general_discount_type' =>$discount->discount_type ?? null,
+                                           'general_discount_value' =>$discount->value ?? null,
                                             ],
 
-                'books_data_with_specific_cart_discount' => [
-                                                            $books_data_with_specific_cart_discount,
-                                                            ],
+                'books_data_with_specific_cart_discount' => 
+                                                            $books_data_with_specific_cart_discount ?? null,
+                                                            
             ]);
     
              $user->cart()->delete();

@@ -10,9 +10,9 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'Customer_id',
-        'CustomerName',
-        'CustomerEmail',
+        'user_id',
+        'user_name',
+        'user_email',
         'InvoiceId',
         'InvoiceStatus',
         'InvoiceReference',
@@ -29,6 +29,11 @@ class Transaction extends Model
         'PaidCurrency',
         'IpAddress',
     ];
+
+    public function users() 
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 
 
 }
