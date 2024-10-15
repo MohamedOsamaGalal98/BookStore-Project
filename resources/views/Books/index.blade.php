@@ -18,7 +18,8 @@
 					@foreach($chunk as $book)
 						<div class="col-sm-4">
 							<div class="card" style="width: 18rem; ">
-								<img height="240" width="280" src="{{asset('images/' . $book->image) }}" class="card-img-top" alt="...">
+
+							<img height="240" width="280" src="{{isset($book->getMedia('image')[0]) ? $book->getMedia('image')[0]->getUrl() : ''}}" class="card-img-top" alt="...">
 								<div class="card-body">
 									<a href="{{url('/books/' . $book->id)}}"><h5 class="card-title" >{{$book->title}}</h5></a>
 									<h6 class="card-subtitle mb-2 text-muted">Department: {{$book->department->name}} </h6>

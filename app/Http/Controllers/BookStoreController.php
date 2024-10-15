@@ -9,8 +9,10 @@ use App\Models\Author;
 use App\Http\Requests\BookRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class BookStoreController extends Controller
+class BookStoreController extends Controller 
 {
     public function index(Request $request)
     {    
@@ -49,16 +51,12 @@ class BookStoreController extends Controller
          //dd($request->all());
          $book  = Book::create($request->all());
          $book->authors()->sync($request->input('author_list'));
-         //dd($book->department()->save($request->department));
-//dd($request->image);
-         $imageName = time().'.'.$request->image->extension();
-
-         // Public Folder
-         $request->image->move(public_path('images'), $imageName);
-          $book->image=$imageName;
-          $book->save();
-
-        // dd($book->authors);
+         
+         $book
+            ->addMediaFromRequest('image')
+            ->toMediaCollection('image');
+         
+        
          Session::flash('message', 'Your Book Has Been Created Successfully'); 
          return redirect('books');
     }
@@ -92,12 +90,10 @@ class BookStoreController extends Controller
          $book->update($request->all());
          $book->authors()->sync($request->input('author_list'));
 
-         $imageName = time().'.'.$request->image->extension();
-         $request->image->move(public_path('images'), $imageName);
-          $book->image=$imageName;
-          $book->save();
-          
-         //dd($book);
+         $book
+         ->addMediaFromRequest('image')
+         ->toMediaCollection('image');
+     
          Session::flash('message', 'Your Book Has Been Updated Successfully'); 
          return redirect('books'); 
     }
