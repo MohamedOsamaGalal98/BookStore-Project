@@ -30,7 +30,7 @@ class BookResource extends Resource
     {
         return $form
             ->schema([
-                //SpatieMediaLibraryFileUpload::make('image')->label('Image')->columnSpanFull(),
+                SpatieMediaLibraryFileUpload::make('image')->label('Image')->collection('image')->columnSpanFull(),
 
                 TextInput::make('title')->label('Book Title')->columnSpanFull(),
 
@@ -45,7 +45,7 @@ class BookResource extends Resource
 
                 TextInput::make('pages')->integer()->label('Number Of Pages'),
                 TextInput::make('published_at')->integer()->label('Published At'),
-                TextInput::make('price')->integer(),
+                TextInput::make('price')->numeric()->label('Price'),
 
             ]);
     }

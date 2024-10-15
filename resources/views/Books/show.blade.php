@@ -7,7 +7,7 @@
 	</head>
 		<body>
 			   <div class="card" style="width: 18rem;">
-			   <img src="{{asset('images/' . $book->image) }}" class="card-img-top" alt="...">
+			   <img src="{{isset($book->getMedia('image')[0]) ? $book->getMedia('image')[0]->getUrl() : ''}}" class="card-img-top" alt="...">
 			    <div class="card-body">
 			     <h5 class="card-title">{{$book->title}}</h5>
 				 <h6 class="card-subtitle mb-2 text-muted">Department:	{{$book->department->name}} </h6>

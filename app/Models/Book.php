@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Book extends Model implements HasMedia
 {
@@ -16,7 +18,7 @@ class Book extends Model implements HasMedia
         'pages',
         'published_at',
         'department_id',
-        'image',
+        //'image',
         'price',
     ];
 
@@ -37,6 +39,20 @@ class Book extends Model implements HasMedia
     {
         return $this->belongsToMany('App\Models\Cart'); 
     }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('image')->singleFile();
+    
+    }
+
+//     public function registerMediaConversions(?Media $media = null): void
+// {
+//     $this
+//         ->addMediaConversion('preview')
+//         ->fit(Fit::Contain, 300, 300)
+//         ->nonQueued();
+// }
 
 
     //  public function applied_discounts()
